@@ -1,6 +1,5 @@
 type id is nat;
 type vote is string;
-
 type votes is map(address, vote);
 type new_vote is nat * string;
 
@@ -8,6 +7,7 @@ type parameter is
   | Vote of new_vote
   | AddAdmin of address
   | RemoveAdmin of address
+  | NewProposal of timestamp
 
 type proposal is 
 record [
@@ -24,7 +24,7 @@ record [
 
 type return is list (operation) * storage
 
-const empty_votes_map : votes = map[];
+const empty_votes_map : votes = map[]
 
 function isAdmin (const admins: set(address)): unit is
   block {
@@ -43,9 +43,9 @@ end
 
 function newProposal (const end_date: timestamp; var storage : storage) : storage is
   block {
-    isAdmin(storage.admins);
+    // isAdmin(storage.admins);
     if (end_date > Tezos.now) then skip
-    else failwith("Invalid timestamp");
+    else failwith("Invalid end date");
 
     storage.proposals[storage.id_count] := record [
       votes = empty_votes_map;
@@ -57,6 +57,9 @@ function newProposal (const end_date: timestamp; var storage : storage) : storag
 
 function addVote (const vote: new_vote; var storage: storage) : storage is 
   block {
+    const valid_votes = set["accept"; "reject"];
+    if not(Set.mem(vote.1, valid_votes)) then failwith("Invalid vote") 
+    else skip;
     if (Tezos.amount < 1tez) then skip
     else failwith("One vote costs 1tez");
     if Big_map.mem(vote.0, storage.proposals) then skip
@@ -83,7 +86,7 @@ function addAdmin (const admin: address; var storage: storage) : storage is
 
 function removeAdmin (const admin: address; var storage: storage) : storage is 
 block {
-//   isAdmin(storage.admins);
+   isAdmin(storage.admins);
   if not(Set.mem(admin, storage.admins)) then failwith("Invalid administrator address")
   else skip;
   const admin_count = Set.size(storage.admins);
@@ -97,4 +100,5 @@ function main (const action : parameter; const storage : storage) : return is
     | Vote(params) -> ((nil : list(operation)), addVote(params, storage))
     | AddAdmin(params) -> ((nil : list(operation)), addAdmin(params, storage))
     | RemoveAdmin(params) -> ((nil : list(operation)), removeAdmin(params, storage))
+    | NewProposal(params) -> ((nil : list(operation)), newProposal(params, storage))
   end
