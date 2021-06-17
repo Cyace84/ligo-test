@@ -43,7 +43,7 @@ end
 
 function newProposal (const end_date: timestamp; var storage : storage) : storage is
   block {
-    // isAdmin(storage.admins);
+    isAdmin(storage.admins);
     if (end_date > Tezos.now) then skip
     else failwith("Invalid end date");
 
