@@ -15,7 +15,7 @@ Tezos.contract
       address: originationOp.contractAddress
     }
 
-    fse.outputFile('accounts/deployed/contract_latest.json', JSON.stringify(data), err => {
+    fse.outputFile('./accounts/deployed/contract_latest.json', JSON.stringify(data), err => {
     if(err) {
       console.log(err);
     } else {
