@@ -35,6 +35,13 @@ NOTE: You can replace the faucetA, faucetB with new faucets `https://faucet.tzal
 
 `./accounts/faucetA.json` `./accounts/faucetB.json`
 
+# Activate the newly created faucets
+
+```
+yarn activateAccounts
+
+```
+
 # Tests
 
 ```
