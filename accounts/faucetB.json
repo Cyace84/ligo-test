@@ -1,0 +1,24 @@
+{
+  "mnemonic": [
+    "dice",
+    "bench",
+    "eye",
+    "curtain",
+    "arrange",
+    "history",
+    "decide",
+    "floor",
+    "dolphin",
+    "local",
+    "law",
+    "patrol",
+    "about",
+    "scale",
+    "motor"
+  ],
+  "secret": "f1292cb2e9a01ef675f7cb935cd81affcfb67842",
+  "amount": "9106923419",
+  "pkh": "tz1iKf4kB9mYw6Caw1qCivVLg2CHGT9EZgy2",
+  "password": "dm7V0aU0J6",
+  "email": "kihqkroo.pjuejkkr@tezos.example.org"
+}
