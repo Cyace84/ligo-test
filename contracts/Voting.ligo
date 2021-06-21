@@ -16,14 +16,14 @@ type parameter is
   | NewProposal of proposal_period
   | TransferOwnership of address
 
-type proposal is 
+type proposal is
 record [
   votesFor: nat;
   votesAgainst: nat;
   end_date: timestamp
 ]
 
-type storage is 
+type storage is
 record [
   owner: address;
   proposals: big_map(id, proposal);
@@ -40,7 +40,7 @@ type return is list (operation) * storage
 //     else failwith("This method is for administrators only.")
 //   } with unit
 
-function getProposal(const prop_id : id; const s : storage) : proposal is 
+function getProposal(const prop_id : id; const s : storage) : proposal is
 case s.proposals[prop_id] of None -> record [
     votesFor =  0n;
     votesAgainst = 0n;
@@ -66,7 +66,7 @@ function newProposal (const days: day; var s : storage) : storage is
     s.id_count := s.id_count + 1n
   } with s
 
-function addVote (const prop_id: id; const new_vote: vote; var s: storage) : storage is 
+function addVote (const prop_id: id; const new_vote: vote; var s: storage) : storage is
   block {
     if Big_map.mem(prop_id, s.proposals) then skip
     else failwith("Invalid proposal id");
@@ -95,7 +95,7 @@ function addAdmin (const admin: address; var s: storage) : storage is
     s.admins := Set.add(admin, s.admins)
 } with s
 
-function removeAdmin (const admin: address; var s: storage) : storage is 
+function removeAdmin (const admin: address; var s: storage) : storage is
   block {
     if (Tezos.sender = s.owner) then skip
     else failwith("This method is for the owner only");
