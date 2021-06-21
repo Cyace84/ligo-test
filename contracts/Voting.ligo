@@ -30,8 +30,6 @@ record [
 
 type return is list (operation) * storage
 
-const empty_votes_map : votes = map[]
-
 // function isAdmin (const admins: set(address)): unit is
 //   block {
 //     if Set.mem(Tezos.sender, admins) then skip
@@ -40,7 +38,7 @@ const empty_votes_map : votes = map[]
 
 function getProposal(const prop_id : id; const s : storage) : proposal is 
 case s.proposals[prop_id] of None -> record [
-    votes = empty_votes_map;
+    votes = (map[] : votes);
     votesFor =  0n;
     votesAgainst = 0n;
     end_date = ("2000-01-01T10:10:10Z" : timestamp)
@@ -57,7 +55,7 @@ function newProposal (const days: day; var s : storage) : storage is
 
     const end_date: timestamp = Tezos.now + days * 86_400;
     s.proposals[s.id_count] := record [
-      votes = empty_votes_map;
+      votes = (map[] : votes);
       votesFor =  0n;
       votesAgainst = 0n;
       end_date = end_date;
