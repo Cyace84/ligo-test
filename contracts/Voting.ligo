@@ -52,10 +52,10 @@ function newProposal (const days: day; var s : storage) : storage is
   block {
     if Set.mem(Tezos.sender, s.admins) then skip
     else failwith("This method is for administrators only");
-    if (days > 0n) then skip
+    if days > 0n then skip
     else failwith("The voting period cannot be 0 day");
 
-    const end_date: timestamp = Tezos.now + (days * 86_400);
+    const end_date: timestamp = Tezos.now + days * 86_400;
     s.proposals[s.id_count] := record [
       votes = empty_votes_map;
       votesFor =  0n;
@@ -75,25 +75,25 @@ function addVote (const vote: new_vote; var s: storage) : storage is
     else failwith("Invalid proposal id");
 
     var proposal : proposal := getProposal(vote.0, s);
-    if (Tezos.now >= proposal.end_date) then failwith("The voting period is over")
+    if Tezos.now >= proposal.end_date then failwith("The voting period is over")
     else skip;
 
     if Map.mem(Tezos.sender, proposal.votes) then failwith("You have already voted for this proposal");
     else skip;
 
     proposal.votes := Map.add((Tezos.sender: address), vote.1, proposal.votes);
-    if (vote.1 = "against") then proposal.votesAgainst := proposal.votesAgainst + 1n
+    if vote.1 = "against" then proposal.votesAgainst := proposal.votesAgainst + 1n
     else proposal.votesFor := proposal.votesFor + 1n;
     s.proposals[vote.0] := proposal
   } with s
 
 function addAdmin (const admin: address; var s: storage) : storage is
   block {
-    if (Tezos.sender = s.owner) then skip
+    if Tezos.sender = s.owner then skip
     else failwith("This method is for the owner only");
     if Set.mem(admin, s.admins) then failwith("This address is already an administrator")
     else skip;
-    storage.admins := Set.add(admin, s.admins)
+    s.admins := Set.add(admin, s.admins)
 } with s
 
 function removeAdmin (const admin: address; var s: storage) : storage is 
@@ -107,7 +107,7 @@ function removeAdmin (const admin: address; var s: storage) : storage is
 
 function transferContractOwnership (const new_owner: address; var s: storage) : storage is
   block {
-    if (Tezos.sender = s.owner) then skip
+    if Tezos.sender = s.owner then skip
     else failwith("This method is for the owner only");
     s.owner := new_owner
   } with s
